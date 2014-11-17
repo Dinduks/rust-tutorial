@@ -1,19 +1,18 @@
 // Theme: Returning references and borrow scopes.
 
-#![feature(slicing_syntax)]         /*
-~~ ~~~~~~~                           *
-|    |                               *
-|  Acknowledge use of incomplete     *
-|  feature.                          *
-|                                    *
-Attach attribute to enclosing item.  *
-In this case, the module.            */
+#![feature(slicing_syntax)]
 
 pub fn main() {
-    let vec = vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-    let (left, right) = split_at(vec[], 5);
-    println!("`{}` split at 5 yields `{}` and `{}`",
+    let mut vec = vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    vec.push(0);
+
+    {
+        let (left, right) = split_at(vec[], 5);
+        println!("`{}` split at 5 yields `{}` and `{}`",
              vec, left, right);
+    }
+
+    vec.push(0);
 }
 
 fn split_at<'a>(slice: &'a [int], mid: uint) -> (&'a [int], &'a [int]) { /*

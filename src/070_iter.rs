@@ -1,120 +1,59 @@
-// Theme: Traits and generic programming.
+// Theme: Iterators and lifetime parameters for types
 
-trait Numeric {                            /*
-      ~~~~~~~                               *
-         |                                  *
-      Defines an interface called "Numeric" */
-
-    fn zero() -> Self;                     /*
-       ~~~~~~    ~~~~                       *
-         |        |                         *
-         |  The type for which the          *
-         |  interface is defined            *
-         |                                  *
-       Free-standing function               */
-
-    fn add(&self, other: &Self) -> Self;   /*
-       ~~~ ~~~~~  ~~~~~~~~~~~~              *
-        |   |         |                     *
-        |   |    Argument of same type      *
-        |   |    as the receiver            *
-        |   |                               *
-        |  Receiver is a reference          *
-        |                                   *
-      Method in the interface               */
+enum List {
+    Nil,
+    Cons(uint, Box<List>)
 }
 
-pub fn main() {
-    let ints: Vec<int> = vec![22, 44, 66];
-    println!("Sum of `{}` is `{}`", ints, sum(&ints));
+// another representation:
+// struct List {
+//     data: uint,
+//     next: Option<Box<List>>
+// }
 
-    let f64s: Vec<f64> = vec![0.5, 1.5, 2.5];
-    println!("Sum of `{}` is `{}`", ints, sum(&f64s));
-}
+fn main() {
+    let my_list = Cons(1, box Cons(2, box Cons(3, box Nil)));
+    let my_list = map(|x| x + 1, &my_list);
 
-fn sum<N>(vec: &Vec<N>) -> N               /*
-   ~~~~~~                                   *
-     |                                      *
-   Generic function over some type `N`      */
+    println!("The list has {} elements!", len(&my_list));
 
-    where N : Numeric                      /*
-    ~~~~~~~~~~~~~~~~~                       *
-           |                                *
-    Type N must implement                   *
-    the trait Numeric                       */
-
-{
-    let mut sum: N = Numeric::zero();      /*
-                     ~~~~~~~~~~~~~          *
-                          |                 *
-            Invoke a suitable version of    *
-            zero() to produce a result of   *
-            type `N`                        */
-
-    for elem in vec.iter() {               /*
-        ~~~~    ~~~~~~~~                    *
-          |        |                        *
-          |   Iterator over references      *
-          |   to the elements (`&N`)        *
-          |                                 *
-        Each element will have              *
-        type `&N`                           */
-
-        let intermediate = sum.add(elem);  /*
-                           ~~~~~~~~~~~~~    *
-                               |            *
-          Invoke a suitable version of      *
-          `add` to add two instances of `N` */
-
-        sum = intermediate;
-    }
-
-    sum
-}
-
-impl Numeric for int {              /*
-~~~~ ~~~~~~~     ~~~                 *
- |      |         |                  *
- |      |      The type for which    *
- |      |      the trait is impl'd.  *
- |      |                            *
- |   The trait being implemented.    *
- |                                   *
-Declares that we plan to implement   *
-a trait for some type.               */
-
-    fn zero() -> int { 0 }          /*
-                 ~~~                 *
-                  |                  *
-        Return type of `Self`,       *
-        tailored to this impl.       */
-
-    fn add(&self, other: &int) -> int {
-        *self + *other
+    for i in my_list.iter() {
+        println!("{}", i);
     }
 }
 
-impl Numeric for f64 {
-    fn zero() -> f64 { 0.0 }         /*
-                 ~~~                  *
-                  |                   *
-        Return type of `Self`,        *
-        tailored to _this_ impl.      */
-
-    fn add(&self, other: &f64) -> f64 {
-        *self + *other
+fn len(list: &List) -> uint {
+    match *list {
+        Nil => 0,
+        Cons(_, box ref tail) => 1 + len(tail)
     }
 }
 
-// Exercise 1. Add another impl for the type `u32`.
-// Check that it works.
+fn map(f: |uint| -> uint, list: &List) -> List {
+    match *list {
+        Nil => Nil,
+        Cons(h, box ref t) => Cons(f(h), box map(f, t))
+    }
+}
 
-// Exercise 2. Why did we use an intermediate variable to store the
-// result of adding each element and the previous sum? (Hint: it has
-// to do with the borrowing rules.)
+struct ListIterator<'a> {
+    list: &'a List
+}
 
-// Exercise 3. How might you modify the trait to avoid this
-// intermediate?
-//
-// Hint i. `&mut`
-// Hint ii. `Copy`
+impl<'a> Iterator<uint> for ListIterator<'a> {
+    fn next(&mut self) -> Option<uint> {
+        match *self.list {
+            Nil => None,
+            Cons(h, box ref t) => {
+                self.list = t;
+                Some(h)
+            }
+        }
+    }
+}
+
+impl List {
+    fn iter<'a>(&'a self) -> ListIterator<'a> {
+        ListIterator { list: self }
+    }
+}

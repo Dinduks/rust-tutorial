@@ -1,9 +1,9 @@
 // Theme: Borrowing.
 
-pub fn main() {
+fn main() {
     let vec = vec![22, 44, 66];
 
-    let sum = sum(&vec);       /*
+    let sum = sum(vec.as_slice());       /*
                   ~~~~          *
                     |           *
             Borrow the vector   */
@@ -11,7 +11,7 @@ pub fn main() {
     println!("The sum of `{}` is `{}`", vec, sum);
 }
 
-fn sum(v: &Vec<int>) -> int {    /*
+fn sum(v: &[int]) -> int {    /*
           ~~~~~~~~~               *
               |                   *
        Request a borrowed vector  */

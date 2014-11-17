@@ -1,7 +1,7 @@
 // Theme: Rust basics.
 
-pub fn main() {
-    let mut vec: Vec<int> = Vec::new();       /*
+fn main() {
+    let mut vec = Vec::new();       /*
             ~~~  ~~~~~~~~   ~~~~~~~~~~~        *
              |      |            |             *
              |      |        Creates and       *
@@ -13,19 +13,7 @@ pub fn main() {
          Vector is owned                       *
          by this stack frame                   */
 
-    /*
-     * What does this look like at runtime?
-     *
-     * Stack                 Heap
-     *
-     * +----------+          +-----------+
-     * | data     | -------> | element 0 |
-     * | capacity |          | ...       |
-     * | length   |          |           |
-     * +----------+          +-----------+
-     */
-
-    vec.push(22);
+    vec.push(22u8);
     vec.push(44);
     vec.push(66);
 

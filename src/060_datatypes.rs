@@ -1,51 +1,117 @@
-// Theme: Threading and messaging.
+// Theme: Structs, enums, and inherent methods.
+use std::num::Float;
 
-use std::comm;
-use std::task;
+const PI: f64 = 3.14159;
+
+#[deriving(Show)]            /*
+~ ~~~~~~~~ ~~~~               *
+|     |     |                 *
+|     |    Trait for use with *
+|     |    format strings     *
+|     |                       *
+| Automatically generate an   *
+| impl for common, repetitive *
+| traits                      *
+|                             *
+Annotation on following item  */
+struct Point {
+    x: f64,
+    y: f64,
+}
+
+#[deriving(Show)]
+enum Shape {     /*
+~~~~              *
+  |               *
+Enumerated set of *
+possible variants */
+
+    Circle(Point, f64),     /*
+    ~~~~~~ ~~~~~~~~~~        *
+      |        |             *
+      |    Variant arguments *
+      |                      *
+    Variant name             */
+
+    Rectangle(/* upper-left */ Point,
+              /* lower-right */ Point)
+}
 
 pub fn main() {
-    let (tx, rx) = comm::channel(); /*
-         ~~  ~~    ~~~~~~~~~~~~~     *
-         |   |          |            *
-         |   |    Returns a pair of  *
-         |   |    endpoints          *
-         |   |                       *
-         |  Receive messages here    *
-         |                           *
-        Send messages here           */
+    let origin = Point { x: 0.0, y: 0.0, };   /*
+                 ~~~~~   ~~~~~~                *
+                   |        |                  *
+            Name of struct  |                  *
+                            |                  *
+                      Value of `x` field (!)   */
 
-    task::spawn(proc() {            /*
-    ~~~~~~~~~~~ ~~~~                 *
-        |        |                   *
-        |     Thread body.           *
-        |     Takes ownership of     *
-        |     things it uses         *
-        |     (e.g. `tx`).           *
-        |                            *
-    Starts a new thread.             */
+    let unit = Point { x: 1.0, y: 1.0, };
 
-        let mut factorials = Vec::new();
-        let mut i = 0;
-        loop {
-            let f = factorial(i);
-            if f > 128 {
-                break;
-            }
+    let mut shape = Circle(origin, 22.0);
+    println!("Area of `{}` is `{}`", shape, shape.area());
 
-            factorials.push(f);
-            i += 1;
+    shape.enlarge(3.5);
+    println!("Area of `{}` is `{}` (enlarged)", shape, shape.area());
+
+    shape = Rectangle(origin, unit);
+    println!("Area of `{}` is `{}`", shape, shape.area());
+}
+
+impl Shape {
+    fn area(&self) -> f64 {
+        match *self {   /*
+        ~~~~~            *
+          |              *
+        Identify variant */
+
+            Circle(_, radius) => 2.0 * PI * radius,   /*
+            ~~~~~~ ~  ~~~~~~     ~~~~~~~~~~~~~~~~~     *
+              |    |    |               |              *
+              |    |    |        Result in this case   *
+              |    |    |                              *
+              |    |  Extract the radius               *
+              |    |  into a new variable              *
+              |    |                                   *
+              | Ignore the origin                      *
+              |                                        *
+            In the event this is a circle...           */
+
+            Rectangle(ref ul, ref lr) => {            /*
+                      ~~~                              *
+                       |                               *
+                 Create reference into the value       *
+                                                       *
+        +--------------+                               *
+        | self: &Shape | -----> +------------------+   *
+        |  ul: &Point  | ---+   | [Rectangle]      |   *
+        |  lr: &Point  | -+ |-> | Point { x: f64   |   *
+        +--------------+  |     |         y: f64 } |   *
+                          |---> | Point { x: f64   |   *
+                                |         y: f64 } |   *
+                                +------------------+   */
+
+                (lr.x - ul.x).abs() *
+                 (lr.y - ul.y).abs()                  /*
+                  ~~~~ Field access: the `.` operator  *
+                       transparently passes through    *
+                       references.                     */
+             }
         }
-        tx.send(factorials);
-    });
+    }
 
-    println!("... do something here ...");
+    fn enlarge(&mut self, scale: f64) {
+        match *self {
+            Circle(_, ref mut radius) => *radius *= scale,  /*
+                      ~~~~~~~            ~~~~~~~             *
+                         |                  |                *
+                         |        Modify `radius` in place   *
+                         |                                   *
+                  Mutable reference into the structure       */
 
-    let f = rx.recv_opt().unwrap();
-
-    println!("factorials up to 128 are `{}`", f);
+        }
+    }
 }
 
-fn factorial(n: uint) -> uint {
-    if n == 0 { 1 } else { n * factorial(n - 1) }
-}
+// Exercise 1. Remove one of the variants above. What happens?
 
+// Exercise 2. Complete the `Rectangle` case of `enlarge`.

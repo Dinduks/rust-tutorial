@@ -1,3 +1,5 @@
+// Theme: syntax
+
 /*
 ^~ First things first: Delimited comment syntax
 */
@@ -21,3 +23,16 @@
 // to some piece of code.  We won't be using these today.
 
 // Anyway, on with the show!
+// Everything is in a function!
+
+fn main() {                                                  /*
+|  |   ^~~~~~ parenthesis-delimited argument list             *
+|  |                                                          *
+|  ^~~~~~ function name                                       *
+|                                                             *
+^~ `fn` keyword marks start of a function item                *
+                                                              */
+    println!("Hello, world");
+}
+
+// rustc main.rs
