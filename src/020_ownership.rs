@@ -11,12 +11,12 @@ fn main() {
                 |                *
               Function call (!)  */
 
-    println!("The sum of the vector {} is `{}`", vec, sum);
+    println!("The sum of the vector is `{}`", sum);
 }
 
 // Function declarations:
 
-fn sum(v: &Vec<int>) -> int {                        /*
+fn sum(v: &Vec<int>) -> int {                       /*
        ~~~~~~~~~~~  ~~~~~~                           *
             |         |                              *
         Arguments     |                              *

@@ -1,15 +1,17 @@
 // Theme: Iterators and lifetime parameters for types
 
+#![feature(globs)]
+
+use List::*;          /*
+          ~            *
+          |            *
+ To avoid namespacing  *
+ everywhere...         */
+
 enum List {
     Nil,
     Cons(uint, Box<List>)
 }
-
-// another representation:
-// struct List {
-//     data: uint,
-//     next: Option<Box<List>>
-// }
 
 fn main() {
     let my_list = Cons(1, box Cons(2, box Cons(3, box Nil)));

@@ -4,15 +4,10 @@
 
 pub fn main() {
     let mut vec = vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-    vec.push(0);
 
-    {
-        let (left, right) = split_at(vec[], 5);
-        println!("`{}` split at 5 yields `{}` and `{}`",
-             vec, left, right);
-    }
-
-    vec.push(0);
+    let (left, right) = split_at(vec[], 5);
+    println!("`{}` split at 5 yields `{}` and `{}`",
+         vec, left, right);
 }
 
 fn split_at<'a>(slice: &'a [int], mid: uint) -> (&'a [int], &'a [int]) { /*

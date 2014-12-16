@@ -1,5 +1,5 @@
 // Theme: Borrowing.
-//
+
 #![feature(slicing_syntax)]         /*
 ~~ ~~~~~~~                           *
 |    |                               *

@@ -2,16 +2,13 @@
 
 fn main() {
     let mut vec = Vec::new();       /*
-            ~~~  ~~~~~~~~   ~~~~~~~~~~~        *
-             |      |            |             *
-             |      |        Creates and       *
-             |      |        returns a vector  *
-             |      |                          *
-             |   Optional                      *
-             |   type annotation               *
-             |                                 *
-         Vector is owned                       *
-         by this stack frame                   */
+            ~~~   ~~~~~~~~~~~        *
+             |         |             *
+             |     Creates and       *
+             |     returns a vector  *
+             |                       *
+         Vector is owned             *
+         by this stack frame         */
 
     vec.push(22u8);
     vec.push(44);
@@ -27,5 +24,3 @@ fn main() {
     println!("{}", string);
 
 } // <-- Here, `vec` goes out of scope, destructor will run and it will be freed.
-
-// Exercise #1: Remove the type annotation. What happens? How can we fix it?

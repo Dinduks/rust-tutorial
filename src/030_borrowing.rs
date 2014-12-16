@@ -3,7 +3,7 @@
 fn main() {
     let vec = vec![22, 44, 66];
 
-    let sum = sum(vec.as_slice());       /*
+    let sum = sum(&vec);       /*
                   ~~~~          *
                     |           *
             Borrow the vector   */
@@ -11,7 +11,7 @@ fn main() {
     println!("The sum of `{}` is `{}`", vec, sum);
 }
 
-fn sum(v: &[int]) -> int {    /*
+fn sum(v: &Vec<int>) -> int {    /*
           ~~~~~~~~~               *
               |                   *
        Request a borrowed vector  */

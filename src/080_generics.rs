@@ -72,22 +72,6 @@ fn sum<N>(vec: &Vec<N>) -> N               /*
     sum
 }
 
-enum Int {
-    Zero,
-    Next(Box<Int>)
-}
-
-impl Numeric for Int {
-    fn add(a: &Int, b: &Int) -> Int {
-        match (a, b) {
-            (Zero, Zero) => Zero,
-            (Zero, b) => b,
-            (a, Zero) => a,
-            (Next(a), b) => Next(add(a, b))
-        }
-    }
-}
-
 impl Numeric for int {              /*
 ~~~~ ~~~~~~~     ~~~                 *
  |      |         |                  *
