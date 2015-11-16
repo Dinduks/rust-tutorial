@@ -14,11 +14,11 @@ fn main() {
     vec.push(44);
     vec.push(66);
 
-    println!("Vector has length `{}` and contents `{}`", vec.len(), vec); /*
-    ~~~~~~~~                    ~~~~              ~~~~   ~~~~~~~~~~~~~~    *
-       |                         |                  |           |          *
-    Macro that takes a          Placeholders -------+           |          *
-    format string.                                          Arguments      */
+    println!("Vector has length `{}` and contents `{:?}`", vec.len(), vec); /*
+    ~~~~~~~~                    ~~~~              ~~~~~~   ~~~~~~~~~~~~~~    *
+       |                         |                  |             |          *
+    Macro that takes a          Placeholders -------+             |          *
+    format string.                                            Arguments      */
 
     let string = format!("Vector has length `{}` and contents `{}`", vec.len(), vec);
     println!("{}", string);
